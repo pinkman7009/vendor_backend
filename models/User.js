@@ -11,10 +11,10 @@ const UserSchema = mongoose.Schema({
         unique: true
     },
     // only for admin
-    email: {
-        type: String,
-        unique: true
-    },
+   email: {
+    type: String,
+	default: null
+  },
     password: {
         type: String,
         required: true
@@ -32,5 +32,8 @@ const UserSchema = mongoose.Schema({
         default: Date.now,
     },
 });
+
+
+
 
 module.exports = mongoose.model("User", UserSchema);
