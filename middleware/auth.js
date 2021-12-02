@@ -12,6 +12,12 @@ exports.protect =asyncHandler(async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.jwtSecret);
 
         req.user = await User.findById(decoded.id);
+
+        if(req.user === null)
+        {
+            return res.status(401).json({"msg": "Token is not valid"})
+        }
+
         next();
     } catch (err) {
         res.status(401).json({ msg: "Token is not valid" });
