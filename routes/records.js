@@ -36,8 +36,12 @@ router.get("/userId/:id", protect, authorize(0, 1), async (req, res) => {
         }
         const records = await Record.find({ user: req.params.id }).populate("user");
 
+        const totalAmount = records.reduce((total, obj) => obj.amount + total,0)
+
+
         res.status(200).json({
-            data: records
+            data: records,
+            totalAmount 
         });
     } catch (error) {
         console.error(error);
