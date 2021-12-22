@@ -1,6 +1,7 @@
 const express = require("express");
 const {protect,authorize} = require("../middleware/auth");
 const User = require("../models/User");
+const Record = require("../models/Record")
 
 const router = express.Router()
 
@@ -10,7 +11,21 @@ router.get("/", protect, authorize(0), async (req,res) => {
     try {
         const users = await User.find({role: 1});
 
-        res.status(200).json(users)
+        const userData = await Promise.all(users.map(async (user) => {
+
+            const records = await Record.find({ user: user._id });
+
+            const totalAmount = records.reduce((total, obj) => obj.amount + total,0)
+
+            return {
+                ...user._doc,
+                subVendorCount: records.length,
+                totalAmount
+            }
+        }))
+
+
+        res.status(200).json(userData)
     } catch (error) {
         console.error(err.message);
         res.status(500).send("server error");
